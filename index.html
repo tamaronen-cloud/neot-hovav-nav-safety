@@ -1,14 +1,46 @@
 import base64
-from PIL import Image
 import io
+from pathlib import Path
+from PIL import Image
 
-with Image.open("input_file_0.png") as img:
-    # Optimize PNG size slightly if needed while keeping high sharpness
-    buf = io.BytesIO()
-    img.save(buf, format="PNG", optimize=True)
-    map_b64 = base64.b64encode(buf.getvalue()).decode("ascii")
 
-print("Base64 length:", len(map_b64))
+def image_to_data_uri(image_path: str) -> str:
+    path = Path(image_path)
+    if not path.exists():
+        return ""
+    with Image.open(path) as img:
+        buf = io.BytesIO()
+        img.save(buf, format="PNG", optimize=True)
+        b64 = base64.b64encode(buf.getvalue()).decode("ascii")
+        return f"data:image/png;base64,{b64}"
+
+
+# עדכני כאן את שמות קובצי התמונה המקומיים במידת הצורך:
+# מפת כלל המועצה ומפת בריכות האידוי
+council_map_uri = image_to_data_uri("input_file_0.png")
+ponds_map_uri = image_to_data_uri("input_file_9.png")
+header_bg_uri = council_map_uri or ponds_map_uri
+
+header_bg_css = (
+    f'background-image: url("{header_bg_uri}");' if header_bg_uri else ""
+)
+
+council_map_html = (
+    f'<img src="{council_map_uri}" alt="מפת מרחב המועצה המקומית תעשייתית נאות חובב">'
+    if council_map_uri
+    else '<div class="map-placeholder">יש למקם את קובץ מפת כלל המועצה ולהגדיר את נתיבו בראש הסקריפט.</div>'
+)
+
+ponds_map_html = (
+    f'<img src="{ponds_map_uri}" alt="מפת בריכות האידוי בנאות חובב">'
+    if ponds_map_uri
+    else '<div class="map-placeholder">יש למקם את קובץ מפת בריכות האידוי ולהגדיר את נתיבו בראש הסקריפט.</div>'
+)
+
+google_maps_url = (
+    "https://www.google.com/maps/search/?api=1&query="
+    "%D7%A0%D7%90%D7%95%D7%AA+%D7%97%D7%95%D7%91%D7%91+%D7%9E%D7%A4%D7%A2%D7%9C%D7%99%D7%9D"
+)
 
 updated_html = f"""<!DOCTYPE html>
 <html lang="he" dir="rtl">
@@ -47,7 +79,6 @@ updated_html = f"""<!DOCTYPE html>
             line-height: 1.65;
         }}
 
-        /* Header with subtle council industrial & ponds backdrop */
         header {{
             position: relative;
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 58, 138, 0.92) 100%);
@@ -63,7 +94,7 @@ updated_html = f"""<!DOCTYPE html>
             content: "";
             position: absolute;
             inset: 0;
-            background-image: url("data:image/png;base64,{map_b64}");
+            {header_bg_css}
             background-size: cover;
             background-position: center;
             opacity: 0.12;
@@ -101,7 +132,6 @@ updated_html = f"""<!DOCTYPE html>
             margin: 0 auto;
         }}
 
-        /* Navigation Tabs */
         nav {{
             background: var(--card-bg);
             position: sticky;
@@ -145,7 +175,6 @@ updated_html = f"""<!DOCTYPE html>
             color: white;
         }}
 
-        /* Main Container */
         main {{
             max-width: 1120px;
             margin: 2rem auto;
@@ -166,7 +195,6 @@ updated_html = f"""<!DOCTYPE html>
             to {{ opacity: 1; transform: translateY(0); }}
         }}
 
-        /* Alert Banner */
         .intro-alert {{
             background: #eff6ff;
             border-right: 5px solid var(--accent-blue);
@@ -182,7 +210,6 @@ updated_html = f"""<!DOCTYPE html>
             margin-bottom: 0.4rem;
         }}
 
-        /* Section Cards */
         .section-card {{
             background: var(--card-bg);
             border-radius: 12px;
@@ -213,7 +240,7 @@ updated_html = f"""<!DOCTYPE html>
             justify-content: space-between;
             margin-bottom: 1rem;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }}
 
         .card-title {{
@@ -223,18 +250,6 @@ updated_html = f"""<!DOCTYPE html>
             align-items: center;
             gap: 0.6rem;
         }}
-
-        .section-tag {{
-            font-size: 0.8rem;
-            font-weight: 700;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            color: white;
-        }}
-
-        .tag-critical {{ background-color: var(--accent-red); }}
-        .tag-high {{ background-color: var(--accent-amber); }}
-        .tag-control {{ background-color: var(--accent-blue); }}
 
         .rule-list {{
             list-style: none;
@@ -257,7 +272,6 @@ updated_html = f"""<!DOCTYPE html>
             margin-bottom: 0.25rem;
         }}
 
-        /* Mandatory Separated Rules Highlight */
         .mandatory-rule {{
             background: #fef2f2;
             border: 1px solid #fecaca;
@@ -273,7 +287,6 @@ updated_html = f"""<!DOCTYPE html>
             margin-bottom: 0.2rem;
         }}
 
-        /* Interactive Wind Simulator */
         .sim-box {{
             background: #0f172a;
             color: white;
@@ -318,7 +331,6 @@ updated_html = f"""<!DOCTYPE html>
             border: 1px solid #334155;
         }}
 
-        /* Map & Diagrams */
         .map-grid {{
             display: grid;
             grid-template-columns: 1fr;
@@ -331,41 +343,18 @@ updated_html = f"""<!DOCTYPE html>
             }}
         }}
 
+        .map-stack {{
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }}
+
         .map-card {{
             background: var(--card-bg);
             border-radius: 12px;
             padding: 1.25rem;
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
-        }}
-
-        .map-toolbar {{
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }}
-
-        .zoom-btn {{
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.45rem 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }}
-
-        .zoom-btn.secondary {{
-            background: #e2e8f0;
-            color: var(--primary);
-        }}
-
-        .zoom-btn.active-zoom {{
-            background: var(--accent-red);
-            color: white;
         }}
 
         .map-viewport {{
@@ -380,16 +369,34 @@ updated_html = f"""<!DOCTYPE html>
             width: 100%;
             height: auto;
             display: block;
-            transition: transform 0.45s ease, transform-origin 0.45s ease;
-            transform-origin: center center;
         }}
 
-        .map-viewport.zoom-ponds img {{
-            transform: scale(2.35);
-            transform-origin: 62% 68%;
+        .map-placeholder {{
+            padding: 2.5rem 1.25rem;
+            text-align: center;
+            color: var(--text-muted);
+            background: #f8fafc;
+            font-weight: 600;
         }}
 
-        /* Checklist */
+        .gmaps-link {{
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.92rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }}
+
+        .gmaps-link:hover {{
+            background: #0369a1;
+        }}
+
         .checklist-item {{
             display: flex;
             align-items: flex-start;
@@ -425,7 +432,6 @@ updated_html = f"""<!DOCTYPE html>
             color: var(--text-muted);
         }}
 
-        /* Emergency Call Box */
         .moked-banner {{
             background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
             color: white;
@@ -475,10 +481,10 @@ updated_html = f"""<!DOCTYPE html>
 
 <nav>
     <div class="nav-container">
-        <button class="nav-btn active" onclick="switchTab('guidelines', this)">1. הנחיות בטיחות והתנהלות</button>
-        <button class="nav-btn" onclick="switchTab('map', this)">2. מפת המועצה ובריכות האידוי</button>
-        <button class="nav-btn" onclick="switchTab('wind', this)">3. סימולטור יציאה ממשפך הסיכונים</button>
-        <button class="nav-btn" onclick="switchTab('checklist', this)">4. רשימת תיוג למפקד</button>
+        <button class="nav-btn active" onclick="switchTab('guidelines', this)">הנחיות בטיחות והתנהלות</button>
+        <button class="nav-btn" onclick="switchTab('map', this)">מפת המועצה ובריכות האידוי</button>
+        <button class="nav-btn" onclick="switchTab('wind', this)">סימולטור יציאה ממשפך הסיכונים</button>
+        <button class="nav-btn" onclick="switchTab('checklist', this)">רשימת תיוג למפקד</button>
     </div>
 </nav>
 
@@ -494,11 +500,9 @@ updated_html = f"""<!DOCTYPE html>
             </p>
         </div>
 
-        <!-- Section 1: Immediate Action -->
         <div class="section-card s-critical">
             <div class="card-header">
                 <div class="card-title">🚨 פעולות מיידיות בעת אירוע חומ"ס או קבלת התרעה</div>
-                <span class="section-tag tag-critical">הצלת חיים – פעולה מיידית</span>
             </div>
             <ul class="rule-list">
                 <li class="rule-item">
@@ -520,11 +524,9 @@ updated_html = f"""<!DOCTYPE html>
             </ul>
         </div>
 
-        <!-- Section 2: Prevention & Mandatory Separated Rules -->
         <div class="section-card s-high">
             <div class="card-header">
                 <div class="card-title">⚠️ התנהלות ומניעה בשטח</div>
-                <span class="section-tag tag-high">מניעה והרחקה</span>
             </div>
             <ul class="rule-list">
                 <li class="rule-item">
@@ -550,11 +552,9 @@ updated_html = f"""<!DOCTYPE html>
             </ul>
         </div>
 
-        <!-- Section 3: Command & Control -->
         <div class="section-card s-control">
             <div class="card-header">
                 <div class="card-title">📡 תקשורת, שליטה ודיווח למוקד המועצה</div>
-                <span class="section-tag tag-control">תיאום ובקרה</span>
             </div>
             <ul class="rule-list">
                 <li class="rule-item">
@@ -573,24 +573,32 @@ updated_html = f"""<!DOCTYPE html>
         </div>
     </section>
 
-    <!-- TAB 2: ATTACHED MAP & EVAPORATION PONDS -->
+    <!-- TAB 2: TWO MAPS & EVAPORATION PONDS -->
     <section id="map" class="tab-section">
         <div class="map-grid">
-            <div class="map-card">
-                <div class="card-header" style="margin-bottom: 0.75rem;">
-                    <h2 style="font-size: 1.25rem;">מפת מרחב המועצה המקומית תעשייתית נאות חובב</h2>
-                </div>
-                <div class="map-toolbar">
-                    <button id="btn-full" class="zoom-btn active-zoom" onclick="setMapView('full')">מבט על (כלל המועצה)</button>
-                    <button id="btn-zoom" class="zoom-btn secondary" onclick="setMapView('ponds')">🔍 זום-אין: אזור בריכות האידוי</button>
+            <div class="map-stack">
+                <div class="map-card">
+                    <div class="card-header" style="margin-bottom: 0.75rem;">
+                        <h2 style="font-size: 1.2rem;">מפת מרחב המועצה המקומית תעשייתית נאות חובב</h2>
+                        <a class="gmaps-link" href="{google_maps_url}" target="_blank" rel="noopener noreferrer">
+                            🗺️ מפת נאות חובב והמפעלים ב-Google Maps
+                        </a>
+                    </div>
+                    <div class="map-viewport">
+                        {council_map_html}
+                    </div>
                 </div>
 
-                <div id="mapViewport" class="map-viewport">
-                    <img src="data:image/png;base64,{map_b64}" alt="מפת המועצה המקומית תעשייתית נאות חובב">
+                <div class="map-card">
+                    <div class="card-header" style="margin-bottom: 0.75rem;">
+                        <h2 style="font-size: 1.2rem;">מפת בריכות האידוי בנאות חובב</h2>
+                    </div>
+                    <div class="map-viewport">
+                        {ponds_map_html}
+                    </div>
                 </div>
             </div>
 
-            <!-- Explanation Column with Declarative Heading -->
             <div class="map-card">
                 <h2 style="font-size: 1.25rem; color: var(--primary); margin-bottom: 1rem;">מאפייני בריכות האידוי, נקזים ומי תהום במרחב נאות חובב</h2>
                 
@@ -632,7 +640,6 @@ updated_html = f"""<!DOCTYPE html>
         <div class="section-card s-critical">
             <div class="card-header">
                 <div class="card-title">🌬️ סימולטור התפנות בניצב לכיוון הרוח (יציאה ממשפך הסיכונים)</div>
-                <span class="section-tag tag-critical">הדגמה אינטראקטיבית</span>
             </div>
             <p style="margin-bottom: 1rem;">
                 במקרה של דליפת חומ"ס, הענן הרעיל נע עם הרוח בצורת קונוס ("משפך סיכונים"). 
@@ -693,7 +700,6 @@ updated_html = f"""<!DOCTYPE html>
         <div class="section-card s-control">
             <div class="card-header">
                 <div class="card-title">✅ רשימת תיוג למפקד הכוח / איש הקשר</div>
-                <span class="section-tag tag-control">בקרה לפני ובמהלך הפעילות</span>
             </div>
             <p style="margin-bottom: 1rem; color: var(--text-muted);">לחצו על כל סעיף כדי לסמן ביצוע לפני היציאה לשטח:</p>
 
@@ -729,7 +735,6 @@ updated_html = f"""<!DOCTYPE html>
         </div>
     </section>
 
-    <!-- Emergency Footer Banner -->
     <div class="moked-banner">
         <div>
             <h3>מוקד מועצה מקומית תעשייתית נאות חובב (24/7)</h3>
@@ -751,26 +756,6 @@ updated_html = f"""<!DOCTYPE html>
         
         document.getElementById(tabId).classList.add('active');
         btnEl.classList.add('active');
-    }}
-
-    function setMapView(mode) {{
-        const viewport = document.getElementById('mapViewport');
-        const btnFull = document.getElementById('btn-full');
-        const btnZoom = document.getElementById('btn-zoom');
-
-        if (mode === 'ponds') {{
-            viewport.classList.add('zoom-ponds');
-            btnZoom.classList.add('active-zoom');
-            btnZoom.classList.remove('secondary');
-            btnFull.classList.remove('active-zoom');
-            btnFull.classList.add('secondary');
-        }} else {{
-            viewport.classList.remove('zoom-ponds');
-            btnFull.classList.add('active-zoom');
-            btnFull.classList.remove('secondary');
-            btnZoom.classList.remove('active-zoom');
-            btnZoom.classList.add('secondary');
-        }}
     }}
 
     function updateWind(angle, btnElement) {{
@@ -800,4 +785,4 @@ updated_html = f"""<!DOCTYPE html>
 with open("neot_hovav_hazmat_briefing_v2.html", "w", encoding="utf-8") as f:
     f.write(updated_html)
 
-print("Saved HTML file successfully, total bytes:", len(updated_html.encode("utf-8")))
+print("Saved HTML file successfully.")
