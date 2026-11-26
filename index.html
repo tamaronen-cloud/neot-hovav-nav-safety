@@ -1,0 +1,853 @@
+html_content = """<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תדריך חומ"ס לכוחות מתאמנים - מועצה מקומית תעשייתית נאות חובב</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent-red: #dc2626;
+            --accent-amber: #d97706;
+            --accent-blue: #0284c7;
+            --accent-green: #16a34a;
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-red);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: var(--accent-red);
+            color: white;
+            font-weight: 700;
+            padding: 0.25rem 0.9rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        /* Navigation Tabs */
+        nav {
+            background: var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Container */
+        main {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.25rem;
+        }
+
+        .tab-section {
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }
+
+        .tab-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Alert Banner */
+        .intro-alert {
+            background: #eff6ff;
+            border-right: 5px solid var(--accent-blue);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .intro-alert h2 {
+            color: #1e3a8a;
+            font-size: 1.2rem;
+            margin-bottom: 0.4rem;
+        }
+
+        /* Priority Cards */
+        .priority-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .priority-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 7px;
+            height: 100%;
+        }
+
+        .p-critical::before { background-color: var(--accent-red); }
+        .p-high::before { background-color: var(--accent-amber); }
+        .p-control::before { background-color: var(--accent-blue); }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .priority-tag {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            color: white;
+        }
+
+        .tag-critical { background-color: var(--accent-red); }
+        .tag-high { background-color: var(--accent-amber); }
+        .tag-control { background-color: var(--accent-blue); }
+
+        .rule-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .rule-item {
+            background: #f8fafc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .rule-item strong {
+            display: block;
+            font-size: 1.05rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        /* Interactive Wind Simulator */
+        .sim-box {
+            background: #0f172a;
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.25rem;
+            text-align: center;
+        }
+
+        .sim-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .sim-btn {
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .sim-btn:hover, .sim-btn.active-dir {
+            background: var(--accent-blue);
+            border-color: #38bdf8;
+        }
+
+        .svg-wrapper {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 1rem;
+            max-width: 650px;
+            margin: 0 auto;
+            border: 1px solid #334155;
+        }
+
+        /* Map & Diagrams */
+        .map-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 850px) {
+            .map-grid {
+                grid-template-columns: 1.2fr 1fr;
+            }
+        }
+
+        .map-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.06);
+        }
+
+        .map-toolbar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .zoom-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.45rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .zoom-btn.secondary {
+            background: #e2e8f0;
+            color: var(--primary);
+        }
+
+        .zoom-btn.active-zoom {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .hazard-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        /* Checklist */
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.9rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checklist-item:hover {
+            background: #f1f5f9;
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 3px;
+            accent-color: var(--accent-green);
+            cursor: pointer;
+        }
+
+        .checklist-item.checked {
+            background: #f0fdf4;
+            border-color: #86efac;
+        }
+
+        .checklist-item.checked span {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        /* Emergency Call Box */
+        .moked-banner {
+            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .moked-banner h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .moked-pill {
+            background: white;
+            color: #991b1b;
+            font-weight: 900;
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="badge">תדריך בטיחות וחומרים מסוכנים מחייב</div>
+    <h1>הנחיות חומ"ס לכוחות מנווטים ומתאמנים</h1>
+    <p>מועצה מקומית תעשייתית נאות חובב • יחידת רישוי וחומ"ס וביטחון המועצה</p>
+</header>
+
+<nav>
+    <div class="nav-container">
+        <button class="nav-btn active" onclick="switchTab('priorities')">1. הנחיות לפי סדר חשיבות</button>
+        <button class="nav-btn" onclick="switchTab('map')">2. מפה קרטוגרפית ובריכות אידוי</button>
+        <button class="nav-btn" onclick="switchTab('wind')">3. סימולטור יציאה ממשפך הסיכונים</button>
+        <button class="nav-btn" onclick="switchTab('checklist')">4. רשימת תיוג למפקד</button>
+    </div>
+</nav>
+
+<main>
+
+    <!-- TAB 1: PRIORITIES -->
+    <section id="priorities" class="tab-section active">
+        <div class="intro-alert">
+            <h2>רקע מקצועי וניהול סיכונים בזמן אמת</h2>
+            <p>
+                בשטח המועצה פועלים מפעלים רבים המכילים מגוון רחב של חומרים מסוכנים. מאחר שמדובר בפעילות ניווט בשטח נרחב, לא ניתן לפרט מראש את סוגי החומרים או תרחישי הסיכון לכל נקודת ציון. 
+                <strong>במקרה של אירוע אמת, כונני החומ"ס והמנהל התורן מבצעים הערכת סיכונים בזמן אמת ומעבירים הנחיות התגוננות מדויקות לכוחות דרך מוקד המועצה.</strong>
+            </p>
+        </div>
+
+        <!-- Priority 1: Immediate Action -->
+        <div class="priority-card p-critical">
+            <div class="card-header">
+                <div class="card-title">🚨 עדיפות 1 (קריטית): פעולות מיידיות בעת אירוע חומ"ס או קבלת התרעה</div>
+                <span class="priority-tag tag-critical">הצלת חיים - פעולה מיידית</span>
+            </div>
+            <ul class="rule-list">
+                <li class="rule-item">
+                    <strong>יציאה ממשפך הסיכונים (תנועה בניצב לכיוון הרוח)</strong>
+                    יש לזהות מיידית את כיוון נשיבת הרוח על ידי הסתכלות על <strong>שרוולי הרוח</strong> המוצבים במפעלים ובקרבתם (או באמצעות אבק, עשן וצמחייה). יש לנוע במהירות <strong>בניצב (90 מעלות) לכיוון הרוח וכלפי מעלה הרוח</strong>. חל איסור מוחלט לנוע עם כיוון הרוח!
+                </li>
+                <li class="rule-item">
+                    <strong>חבירה להנחיות המוקד תוך כדי התרחקות</strong>
+                    במקביל ליציאה המיידית ממשפך הסיכונים, על איש הקשר ליצור קשר מיידי עם מוקד המועצה, למסור נ"צ מדויק ולקבל הכוונה להמשך פינוי על בסיס הערכת הסיכונים של כונני החומ"ס.
+                </li>
+                <li class="rule-item">
+                    <strong>הימנעות ממקומות נמוכים (וואדיות וערוצי נחל)</strong>
+                    גזים רעילים רבים כבדים מהאוויר ומצטברים בשקעים, בוואדיות ובערוצי נחל. בעת אירוע יש לשאוף לעלות לשטח גבוה ופתוח.
+                </li>
+                <li class="rule-item">
+                    <strong>התגוננות ראשונית לדרכי הנשימה</strong>
+                    במקרה של חשיפה לאדים או עשן, יש לכסות את האף והפה בבד לח (חולצה או מגבת רטובה) עד להתרחקות מלאה מהאזור המזוהם.
+                </li>
+            </ul>
+        </div>
+
+        <!-- Priority 2: Prevention & Terrain Hazards -->
+        <div class="priority-card p-high">
+            <div class="card-header">
+                <div class="card-title">⚠️ עדיפות 2 (גבוהה): התנהלות, מניעה ומפגעי שטח במועצה</div>
+                <span class="priority-tag tag-high">מניעה והרחקה</span>
+            </div>
+            <ul class="rule-list">
+                <li class="rule-item">
+                    <strong>הרחקה מתשתיות תעשייתיות</strong>
+                    חל איסור מוחלט להתקרב לגדרות מפעלים, גשרי צנרת, מאגרים, מאצרות או תעלות שפכים.
+                </li>
+                <li class="rule-item">
+                    <strong>בריכות אידוי, נקזים ומי תהום מזוהמים</strong>
+                    ברחבי שטח המועצה פזורות <strong>בריכות אידוי, תעלות ניקוז ונקזים פתוחים</strong>, וכן קיימים באזור <strong>מי תהום העשויים להיות מזוהמים</strong>. חל איסור מוחלט להתקרב לבריכות האידוי, לחצות תעלות ניקוז, לגעת במים עומדים או לשתות ממקורות מים בשטח.
+                </li>
+                <li class="rule-item">
+                    <strong>זיהוי סימנים מחשידים בשטח</strong>
+                    יש לגלות ערנות מתמדת לריח כימי חריג, ענן עשן או אדים בצבע לא שגרתי, רעש של דליפה או שריקה בלחץ מצינור, או תחושת צריבה בעיניים ובדרכי הנשימה.
+                </li>
+            </ul>
+        </div>
+
+        <!-- Priority 3: Command & Control -->
+        <div class="priority-card p-control">
+            <div class="card-header">
+                <div class="card-title">📡 עדיפות 3 (שליטה וקשר): ממשק עבודה מול מוקד המועצה</div>
+                <span class="priority-tag tag-control">תיאום ובקרה</span>
+            </div>
+            <ul class="rule-list">
+                <li class="rule-item">
+                    <strong>גורם מקשר יחיד בשטח</strong>
+                    איש הקשר שהוגדר בטופס התיאום הוא הגורם הבלעדי שמתנהל מול מוקד המועצה. באחריותו לוודא שכל מפקד נוסף בשטח עובד אך ורק דרכו ואינו פונה עצמאית למוקד.
+                </li>
+                <li class="rule-item">
+                    <strong>דיווח כניסה ויציאה חובה</strong>
+                    חובה לעדכן את מוקד המועצה טלפונית בתחילת הפעילות בשטח ובסיומה המלאה של היציאה ממרחב המועצה.
+                </li>
+                <li class="rule-item">
+                    <strong>דיווח מיקום בחירום (נ"צ)</strong>
+                    בעת קבלת התרעה או זיהוי מפגע, על איש הקשר למסור למוקד נקודת ציון (נ"צ) מדויקת של כלל הכוחות, כדי לאפשר לכונני החומ"ס למפות את הכוח ביחס למשפך הסיכונים.
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- TAB 2: CARTOGRAPHIC MAP & EVAPORATION PONDS -->
+    <section id="map" class="tab-section">
+        <div class="map-grid">
+            <div class="map-card">
+                <div class="card-header" style="margin-bottom: 0.75rem;">
+                    <h2 style="font-size: 1.25rem;">מפה קרטוגרפית סכמטית - מרחב נאות חובב</h2>
+                </div>
+                <div class="map-toolbar">
+                    <button id="btn-full" class="zoom-btn active-zoom" onclick="setMapView('full')">מבט על (כלל המועצה)</button>
+                    <button id="btn-zoom" class="zoom-btn secondary" onclick="setMapView('ponds')">🔍 זום-אין: מתחם בריכות אידוי ונקזים</button>
+                </div>
+
+                <div style="border: 2px solid #cbd5e1; border-radius: 10px; overflow: hidden; background: #e8e4d8;">
+                    <svg id="topoMap" viewBox="0 0 800 560" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <!-- Contour pattern / desert terrain -->
+                            <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+                                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d6d0c0" stroke-width="0.8"/>
+                            </pattern>
+                            <pattern id="hazardHatch" width="10" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                                <line x1="0" y1="0" x2="0" y2="10" stroke="#dc2626" stroke-width="2" />
+                            </pattern>
+                        </defs>
+
+                        <!-- Background terrain -->
+                        <rect width="800" height="560" fill="#f3efe4"/>
+                        <rect width="800" height="560" fill="url(#gridPattern)"/>
+
+                        <!-- Topographic Contour Lines -->
+                        <path d="M -20,120 Q 180,90 320,180 T 650,140 T 820,200" fill="none" stroke="#cbbba0" stroke-width="1.5"/>
+                        <path d="M -20,260 Q 150,220 350,290 T 620,250 T 820,310" fill="none" stroke="#cbbba0" stroke-width="1.5"/>
+                        <path d="M -20,420 Q 200,380 420,450 T 700,410 T 820,470" fill="none" stroke="#cbbba0" stroke-width="1.5"/>
+                        <text x="60" y="112" fill="#8c7b65" font-size="11">340m</text>
+                        <text x="720" y="302" fill="#8c7b65" font-size="11">315m</text>
+                        <text x="120" y="412" fill="#8c7b65" font-size="11">295m</text>
+
+                        <!-- Wadi / Stream Channels (Lowlands) -->
+                        <path d="M 40,560 C 120,440 210,390 290,320 C 370,250 480,210 560,120 C 620,60 700,30 780,0" fill="none" stroke="#60a5fa" stroke-width="6" stroke-dasharray="12,6" opacity="0.65"/>
+                        <text x="210" y="370" fill="#1d4ed8" font-size="12" font-weight="bold" transform="rotate(-32 210,370)">ערוץ נחל / שטח נמוך (סכנת הצטברות גזים)</text>
+
+                        <!-- Highway 40 -->
+                        <path d="M 110,0 L 145,560" fill="none" stroke="#475569" stroke-width="10"/>
+                        <path d="M 110,0 L 145,560" fill="none" stroke="#facc15" stroke-width="1.5" stroke-dasharray="8,8"/>
+                        <rect x="92" y="45" width="44" height="22" rx="4" fill="#1e293b"/>
+                        <text x="114" y="60" fill="white" font-size="11" font-weight="bold" text-anchor="middle">כביש 40</text>
+
+                        <!-- Industrial Core Zone -->
+                        <g id="industrial-zone">
+                            <rect x="210" y="70" width="240" height="170" rx="8" fill="#cbd5e1" stroke="#475569" stroke-width="2.5"/>
+                            <rect x="210" y="70" width="240" height="170" rx="8" fill="url(#hazardHatch)" opacity="0.25"/>
+                            <text x="330" y="105" fill="#0f172a" font-size="15" font-weight="900" text-anchor="middle">ליבת מתחם המפעלים</text>
+                            <text x="330" y="125" fill="#dc2626" font-size="12" font-weight="bold" text-anchor="middle">אזור אסור לכניסה / התקרבות</text>
+                            
+                            <!-- Factory buildings -->
+                            <rect x="235" y="145" width="55" height="40" fill="#64748b" stroke="#1e293b"/>
+                            <rect x="310" y="145" width="60" height="45" fill="#64748b" stroke="#1e293b"/>
+                            <circle cx="405" cy="168" r="18" fill="#94a3b8" stroke="#1e293b"/>
+
+                            <!-- Wind Socks Icons -->
+                            <g transform="translate(220, 80)">
+                                <line x1="0" y1="0" x2="0" y2="22" stroke="#0f172a" stroke-width="2.5"/>
+                                <polygon points="0,2 22,6 22,12 0,14" fill="#f97316" stroke="#0f172a" stroke-width="1"/>
+                                <text x="26" y="12" fill="#0f172a" font-size="10" font-weight="bold">שרוול רוח</text>
+                            </g>
+                            <g transform="translate(430, 210)">
+                                <line x1="0" y1="0" x2="0" y2="22" stroke="#0f172a" stroke-width="2.5"/>
+                                <polygon points="0,2 22,6 22,12 0,14" fill="#f97316" stroke="#0f172a" stroke-width="1"/>
+                            </g>
+                        </g>
+
+                        <!-- Evaporation Ponds & Drainage Zone (Target for Zoom-In) -->
+                        <g id="evaporation-ponds">
+                            <!-- Buffer Boundary -->
+                            <rect x="440" y="275" width="320" height="245" rx="12" fill="#fef2f2" fill-opacity="0.6" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="8,4"/>
+                            <text x="600" y="298" fill="#991b1b" font-size="14" font-weight="900" text-anchor="middle">מתחם בריכות אידוי ונקזים (אסור להתקרב!)</text>
+
+                            <!-- Pond 1 -->
+                            <polygon points="465,315 585,315 575,395 460,390" fill="#0284c7" fill-opacity="0.75" stroke="#0369a1" stroke-width="2"/>
+                            <text x="522" y="358" fill="white" font-size="12" font-weight="bold" text-anchor="middle">בריכת אידוי 1</text>
+
+                            <!-- Pond 2 -->
+                            <polygon points="605,315 735,320 730,400 600,395" fill="#0ea5e9" fill-opacity="0.75" stroke="#0369a1" stroke-width="2"/>
+                            <text x="668" y="360" fill="white" font-size="12" font-weight="bold" text-anchor="middle">בריכת אידוי 2</text>
+
+                            <!-- Pond 3 -->
+                            <polygon points="470,415 620,415 615,495 465,490" fill="#0284c7" fill-opacity="0.75" stroke="#0369a1" stroke-width="2"/>
+                            <text x="542" y="458" fill="white" font-size="12" font-weight="bold" text-anchor="middle">בריכת אידוי 3</text>
+
+                            <!-- Drainage Channels & Monitoring Wells -->
+                            <path d="M 450,405 L 745,408" stroke="#d97706" stroke-width="4" stroke-dasharray="6,3"/>
+                            <path d="M 592,310 L 592,505" stroke="#d97706" stroke-width="4" stroke-dasharray="6,3"/>
+                            <text x="680" y="430" fill="#92400e" font-size="11" font-weight="bold">תעלת ניקוז / נקז</text>
+
+                            <!-- Groundwater Monitoring Wells -->
+                            <circle cx="660" cy="465" r="7" fill="#dc2626" stroke="white" stroke-width="2"/>
+                            <text x="660" y="485" fill="#7f1d1d" font-size="10" font-weight="bold" text-anchor="middle">קידוח ניטור מי תהום</text>
+
+                            <circle cx="725" cy="450" r="7" fill="#dc2626" stroke="white" stroke-width="2"/>
+                            <text x="725" y="470" fill="#7f1d1d" font-size="10" font-weight="bold" text-anchor="middle">נקז איסוף</text>
+                        </g>
+
+                        <!-- Navigation Open Area -->
+                        <g id="nav-area">
+                            <rect x="180" y="420" width="210" height="90" rx="8" fill="#dcfce7" fill-opacity="0.7" stroke="#16a34a" stroke-width="2" stroke-dasharray="5,5"/>
+                            <text x="285" y="460" fill="#14532d" font-size="13" font-weight="bold" text-anchor="middle">מרחב ניווט פתוח (דוגמה)</text>
+                            <text x="285" y="480" fill="#166534" font-size="11" text-anchor="middle">שמירה על מרחק בטיחות מתשתיות</text>
+                        </g>
+
+                        <!-- Compass North Arrow -->
+                        <g transform="translate(745, 55)">
+                            <circle cx="0" cy="0" r="22" fill="white" stroke="#0f172a" stroke-width="1.5"/>
+                            <polygon points="0,-16 6,6 0,2 -6,6" fill="#dc2626"/>
+                            <text x="0" y="-26" fill="#0f172a" font-size="12" font-weight="900" text-anchor="middle">N</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="hazard-legend">
+                    <div class="legend-item"><span class="dot" style="background:#64748b;"></span> מתחם מפעלים (אסור להתקרב)</div>
+                    <div class="legend-item"><span class="dot" style="background:#0284c7;"></span> בריכות אידוי</div>
+                    <div class="legend-item"><span class="dot" style="background:#d97706;"></span> נקזים ותעלות ניקוז</div>
+                    <div class="legend-item"><span class="dot" style="background:#f97316;"></span> מיקום שרוול רוח</div>
+                </div>
+            </div>
+
+            <!-- Explanation Column -->
+            <div class="map-card">
+                <h2 style="font-size: 1.25rem; color: var(--primary); margin-bottom: 1rem;">הסבר על בריכות האידוי, נקזים ומי תהום בשטח המועצה</h2>
+                
+                <div class="rule-item" style="margin-bottom: 1rem; border-right: 4px solid var(--accent-blue);">
+                    <strong>מהן בריכות האידוי בנאות חובב?</strong>
+                    בשטח המועצה התעשייתית קיימות בריכות אידוי גדולות המיועדות לקליטה ואידוי של שפכים תעשייתיים ותמלחות מבוקרות ממפעלי המועצה. הבריכות מגודרות ומשולטות, אך בשטח הפתוח נראות לעיתים כמאגרי מים רגילים.
+                </div>
+
+                <div class="rule-item" style="margin-bottom: 1rem; border-right: 4px solid var(--accent-amber);">
+                    <strong>נקזים ותעלות ניקוז היקפיות</strong>
+                    סביב בריכות האידוי ובשטחים הפתוחים במועצה פרוסים נקזים, תעלות איסוף וקידוחי ניטור שתפקידם לנקז נגר ולמנוע חלחול. נוזלים הנמצאים בנקזים או בתעלות עלולים להכיל שאריות כימיקלים או מליחות גבוהה ביותר.
+                </div>
+
+                <div class="rule-item" style="margin-bottom: 1rem; border-right: 4px solid var(--accent-red);">
+                    <strong>סכנת מי תהום מזוהמים</strong>
+                    באזור המועצה קיימים מי תהום רדודים או נקודות נביעה/היקוות העשויים להיות מזוהמים בחומרים תעשייתיים. 
+                    <br><strong>הנחיה מחייבת:</strong> אין להתקרב לשפת הבריכות, אין לרדת לתעלות ניקוז, ואין לגעת או להשתמש בכל מקור מים או שלולית בשטח המועצה.
+                </div>
+
+                <div style="background: #fef3c7; padding: 1rem; border-radius: 8px; font-size: 0.95rem; color: #78350f;">
+                    <strong>טיפ ניווט:</strong> השתמשו בכפתור <strong>"זום-אין: מתחם בריכות אידוי ונקזים"</strong> משמאל כדי להכיר את מבנה הבריכות והתעלות הצמודות אליהן.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 3: INTERACTIVE WIND SIMULATOR -->
+    <section id="wind" class="tab-section">
+        <div class="priority-card p-critical">
+            <div class="card-header">
+                <div class="card-title">🌬️ סימולטור התפנות בניצב לכיוון הרוח (יציאה ממשפך הסיכונים)</div>
+                <span class="priority-tag tag-critical">הדגמה אינטראקטיבית</span>
+            </div>
+            <p style="margin-bottom: 1rem;">
+                במקרה של דליפת חומ"ס, הענן הרעיל נע עם הרוח בצורת קונוס ("משפך סיכונים"). 
+                <strong>הסתכלו על שרוולי הרוח במפעלים הסמוכים</strong>, זהו לאן הרוח נושבת, ובחרו את כיוון הרוח בסימולטור כדי לראות את נתיב ההימלטות הנכון:
+            </p>
+
+            <div class="sim-box">
+                <div style="font-weight: 700; margin-bottom: 0.5rem;">בחרו את כיוון נשיבת הרוח (לפי שרוול הרוח):</div>
+                <div class="sim-controls">
+                    <button class="sim-btn active-dir" onclick="updateWind(0, this)">רוח צפונית (נושבת דרומה ⬇️)</button>
+                    <button class="sim-btn" onclick="updateWind(-45, this)">רוח צפון-מערבית (נושבת דרום-מזרחה ↘️)</button>
+                    <button class="sim-btn" onclick="updateWind(90, this)">רוח מזרחית (נושבת מערבה ⬅️)</button>
+                    <button class="sim-btn" onclick="updateWind(-90, this)">רוח מערבית (נושבת מזרחה ➡️)</button>
+                </div>
+
+                <div class="svg-wrapper">
+                    <svg id="windSvg" viewBox="0 0 500 380" width="100%" height="auto">
+                        <!-- Compass -->
+                        <text x="250" y="22" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">צפון (N)</text>
+                        <text x="250" y="370" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">דרום (S)</text>
+                        <text x="475" y="195" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">מזרח</text>
+                        <text x="25" y="195" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">מערב</text>
+
+                        <!-- Rotating Group around Factory Center (250, 190) -->
+                        <g id="plumeGroup" transform="rotate(0 250 190)" style="transition: transform 0.5s ease;">
+                            <!-- Danger Funnel (Downwind) -->
+                            <polygon points="250,190 175,355 325,355" fill="rgba(220, 38, 38, 0.45)" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4"/>
+                            <text x="250" y="315" fill="#fca5a5" font-size="13" font-weight="bold" text-anchor="middle">משפך סיכונים (סכנה!)</text>
+                            <text x="250" y="333" fill="#fecaca" font-size="11" text-anchor="middle">אין לנוע עם כיוון הרוח</text>
+
+                            <!-- Wind Arrow -->
+                            <line x1="250" y1="65" x2="250" y2="145" stroke="#38bdf8" stroke-width="4"/>
+                            <polygon points="250,155 242,140 258,140" fill="#38bdf8"/>
+                            <text x="250" y="55" fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle">כיוון הרוח</text>
+
+                            <!-- Soldier inside/near risk zone -->
+                            <circle cx="250" cy="245" r="9" fill="#facc15" stroke="#0f172a" stroke-width="2"/>
+                            <text x="250" y="268" fill="#fef08a" font-size="11" font-weight="bold" text-anchor="middle">מיקום הכוח</text>
+
+                            <!-- Escape Arrows (90 degrees perpendicular) -->
+                            <!-- Right Escape -->
+                            <line x1="265" y1="245" x2="385" y2="245" stroke="#22c55e" stroke-width="4"/>
+                            <polygon points="395,245 380,237 380,253" fill="#22c55e"/>
+                            <text x="345" y="232" fill="#86efac" font-size="12" font-weight="bold" text-anchor="middle">פינוי 90° (בניצב)</text>
+
+                            <!-- Left Escape -->
+                            <line x1="235" y1="245" x2="115" y2="245" stroke="#22c55e" stroke-width="4"/>
+                            <polygon points="105,245 120,237 120,253" fill="#22c55e"/>
+                            <text x="155" y="232" fill="#86efac" font-size="12" font-weight="bold" text-anchor="middle">פינוי 90° (בניצב)</text>
+                        </g>
+
+                        <!-- Fixed Factory Source at Center -->
+                        <circle cx="250" cy="190" r="22" fill="#dc2626" stroke="white" stroke-width="2.5"/>
+                        <text x="250" y="194" fill="white" font-size="11" font-weight="bold" text-anchor="middle">מוקד</text>
+                    </svg>
+                </div>
+
+                <div style="margin-top: 1rem; font-size: 0.95rem; color: #cbd5e1;">
+                    <strong>כלל אצבע בשטח:</strong> זהה את שרוול הרוח במפעל הקרוב ➔ אל תברח קדימה עם הרוח ואל תרוץ לכיוון המפעל ➔ חתוך הצידה ב-90 מעלות לשטח גבוה ודווח למוקד!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TAB 4: COMMANDER CHECKLIST -->
+    <section id="checklist" class="tab-section">
+        <div class="priority-card p-control">
+            <div class="card-header">
+                <div class="card-title">✅ רשימת תיוג למפקד הכוח / איש הקשר</div>
+                <span class="priority-tag tag-control">בקרה לפני ובמהלך האימון</span>
+            </div>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">לחצו על כל סעיף כדי לסמן ביצוע לפני היציאה לשטח:</p>
+
+            <label class="checklist-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>איש קשר יחיד מוגדר:</strong> וידאתי שפרטיי מופיעים בטופס התיאום וכי כלל מפקדי המשנה בשטח מתנהלים אך ורק דרכי מול מוקד המועצה.</span>
+            </label>
+
+            <label class="checklist-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>דיווח תחילת פעילות למוקד:</strong> יצרתי קשר טלפוני עם מוקד המועצה עם ההגעה לשטח ודיווחתי על כניסת הכוחות.</span>
+            </label>
+
+            <label class="checklist-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>תדרוך הכוחות על איסור התקרבות:</strong> חידדתי לחיילים איסור מוחלט להתקרב לגדרות מפעלים, צנרות, בריכות אידוי, נקזים ומקורות מים (סכנת מי תהום מזוהמים).</span>
+            </label>
+
+            <label class="checklist-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>הכרת נוהל התפנות ושרוולי רוח:</strong> הנחיתי את המפקדים והחיילים לזהות שרוולי רוח במפעלים, ובמקרה של אירוע/ריח חריג לנוע ב-90 מעלות בניצב לכיוון הרוח ולעלות לשטח גבוה.</span>
+            </label>
+
+            <label class="checklist-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>אמצעי מסירת נ"צ זמין:</strong> ברשותי מפה/אמצעי ניווט למסירת נ"צ מדויקת למוקד המועצה בכל רגע נתון במקרה חירום.</span>
+            </label>
+
+            <label class="checklist-item" onclick="toggleCheck(this)">
+                <input type="checkbox">
+                <span><strong>דיווח סיום פעילות למוקד:</strong> בסיום הניווט ויציאת אחרון החיילים משטח המועצה – חובה לדווח על סגירת פעילות למוקד.</span>
+            </label>
+        </div>
+    </section>
+
+    <!-- Emergency Footer Banner -->
+    <div class="moked-banner">
+        <div>
+            <h3>מוקד מועצה מקומית תעשייתית נאות חובב (24/7)</h3>
+            <p>בכל כניסה לשטח, יציאה מהשטח, זיהוי מפגע או קבלת התרעה – יש לפנות למוקד המועצה דרך איש הקשר המוגדר בלבד.</p>
+        </div>
+        <div class="moked-pill">דיווח חובה: כניסה • חירום (נ"צ) • יציאה</div>
+    </div>
+
+</main>
+
+<footer>
+    מועצה מקומית תעשייתית נאות חובב • יחידת רישוי וחומ"ס | מותאם להטמעה ב-GitHub Pages
+</footer>
+
+<script>
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    function setMapView(mode) {
+        const svg = document.getElementById('topoMap');
+        const btnFull = document.getElementById('btn-full');
+        const btnZoom = document.getElementById('btn-zoom');
+
+        if (mode === 'ponds') {
+            svg.setAttribute('viewBox', '425 260 355 275');
+            btnZoom.classList.add('active-zoom');
+            btnZoom.classList.remove('secondary');
+            btnFull.classList.remove('active-zoom');
+            btnFull.classList.add('secondary');
+        } else {
+            svg.setAttribute('viewBox', '0 0 800 560');
+            btnFull.classList.add('active-zoom');
+            btnFull.classList.remove('secondary');
+            btnZoom.classList.remove('active-zoom');
+            btnZoom.classList.add('secondary');
+        }
+    }
+
+    function updateWind(angle, btnElement) {
+        const plume = document.getElementById('plumeGroup');
+        plume.setAttribute('transform', `rotate(${angle} 250 190)`);
+
+        document.querySelectorAll('.sim-btn').forEach(btn => btn.classList.remove('active-dir'));
+        btnElement.classList.add('active-dir');
+    }
+
+    function toggleCheck(labelElement) {
+        const checkbox = labelElement.querySelector('input[type="checkbox"]');
+        setTimeout(() => {
+            if (checkbox.checked) {
+                labelElement.classList.add('checked');
+            } else {
+                labelElement.classList.remove('checked');
+            }
+        }, 10);
+    }
+</script>
+
+</body>
+</html>
+"""
+
+with open("neot_hovav_hazmat_briefing.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("HTML file created successfully.")
