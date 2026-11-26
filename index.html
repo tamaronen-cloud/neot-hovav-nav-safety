@@ -1,4 +1,16 @@
-<!DOCTYPE html>
+import base64
+import io
+from PIL import Image
+
+with Image.open("input_file_0.png") as img:
+  # Optimize PNG size slightly if needed while keeping high sharpness
+  buf = io.BytesIO()
+  img.save(buf, format="PNG", optimize=True)
+  map_b64 = base64.b64encode(buf.getvalue()).decode("ascii")
+
+print("Base64 length:", len(map_b64))
+
+updated_html = f"""<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -6,9 +18,9 @@
     <title>הנחיות חומ"ס לכוחות מנווטים - מועצה מקומית תעשייתית נאות חובב</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
+        :root {{
             --primary: #0f172a;
             --secondary: #1e293b;
             --accent-red: #dc2626;
@@ -20,24 +32,33 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
-        }
+        }}
 
-        * {
+        * {{
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-        }
+        }}
 
-        body {
-            font-family: 'Assistant', sans-serif;
+        body {{
+            font-family: 'Heebo', sans-serif;
             background-color: var(--bg-light);
             color: var(--text-main);
             line-height: 1.65;
-            direction: rtl;
-            text-align: right;
-        }
+        }}
 
-        header {
+        /* Official print-style font scoped to the council area */
+        .council-official-font,
+        .council-official-font h1,
+        .council-official-font h2,
+        .council-official-font h3,
+        .council-official-font p,
+        .council-official-font .badge {{
+            font-family: 'Frank Ruhl Libre', 'Heebo', serif;
+        }}
+
+        /* Header with subtle council industrial & ponds backdrop */
+        header {{
             position: relative;
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 58, 138, 0.92) 100%);
             color: white;
@@ -46,14 +67,26 @@
             border-bottom: 5px solid var(--accent-red);
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
             overflow: hidden;
-        }
+        }}
 
-        header .header-content {
+        header::before {{
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/png;base64,{map_b64}");
+            background-size: cover;
+            background-position: center;
+            opacity: 0.12;
+            filter: blur(2px) grayscale(30%);
+            pointer-events: none;
+        }}
+
+        header .header-content {{
             position: relative;
             z-index: 1;
-        }
+        }}
 
-        .badge {
+        .badge {{
             display: inline-block;
             background-color: var(--accent-red);
             color: white;
@@ -63,15 +96,184 @@
             font-size: 0.85rem;
             margin-bottom: 0.75rem;
             letter-spacing: 0.5px;
-        }
+        }}
 
-        header h1 {
+        header h1 {{
             font-size: 2rem;
-            font-weight: 800;
+            font-weight: 900;
             margin-bottom: 0.45rem;
-        }
+        }}
 
-        header p {
+        header p {{
             font-size: 1.08rem;
             color: #cbd5e1;
-            max-width:
+            max-width: 760px;
+            margin: 0 auto;
+        }}
+
+        /* Navigation Tabs */
+        nav {{
+            background: var(--card-bg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }}
+
+        .nav-container {{
+            max-width: 1120px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+        }}
+
+        .nav-btn {{
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 0.5rem 1.05rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }}
+
+        .nav-btn:hover {{
+            background: #f1f5f9;
+            color: var(--primary);
+        }}
+
+        .nav-btn.active {{
+            background: var(--primary);
+            color: white;
+        }}
+
+        /* Main Container */
+        main {{
+            max-width: 1120px;
+            margin: 2rem auto;
+            padding: 0 1.25rem;
+        }}
+
+        .tab-section {{
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }}
+
+        .tab-section.active {{
+            display: block;
+        }}
+
+        @keyframes fadeIn {{
+            from {{ opacity: 0; transform: translateY(8px); }}
+            to {{ opacity: 1; transform: translateY(0); }}
+        }}
+
+        /* Alert Banner */
+        .intro-alert {{
+            background: #eff6ff;
+            border-right: 5px solid var(--accent-blue);
+            padding: 1.25rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.75rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }}
+
+        .intro-alert h2 {{
+            color: #1e3a8a;
+            font-size: 1.2rem;
+            margin-bottom: 0.4rem;
+        }}
+
+        /* Section Cards */
+        .section-card {{
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .section-card::before {{
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 7px;
+            height: 100%;
+        }}
+
+        .s-critical::before {{ background-color: var(--accent-red); }}
+        .s-high::before {{ background-color: var(--accent-amber); }}
+        .s-control::before {{ background-color: var(--accent-blue); }}
+
+        .card-header {{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }}
+
+        .card-title {{
+            font-size: 1.32rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }}
+
+        .rule-list {{
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.95rem;
+        }}
+
+        .rule-item {{
+            background: #f8fafc;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }}
+
+        .rule-item strong {{
+            display: block;
+            font-size: 1.05rem;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }}
+
+        /* Mandatory Separated Rules Highlight */
+        .mandatory-rule {{
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-right: 5px solid var(--accent-red);
+            padding: 0.95rem 1.25rem;
+            border-radius: 8px;
+        }}
+
+        .mandatory-rule strong {{
+            display: block;
+            font-size: 1.05rem;
+            color: #991b1b;
+            margin-bottom: 0.2rem;
+        }}
+
+        /* Interactive Wind Simulator */
+        .sim-box {{
+            background: #0f172a;
+            color: white;
+            border-radius: 12px;
+            padding:
