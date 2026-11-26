@@ -1,803 +1,680 @@
-import base64
-from PIL import Image
-import io
-
-with Image.open("input_file_0.png") as img:
-    # Optimize PNG size slightly if needed while keeping high sharpness
-    buf = io.BytesIO()
-    img.save(buf, format="PNG", optimize=True)
-    map_b64 = base64.b64encode(buf.getvalue()).decode("ascii")
-
-print("Base64 length:", len(map_b64))
-
-updated_html = f"""<!DOCTYPE html>
+<!doctype html>
 <html lang="he" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>הנחיות חומ"ס לכוחות מנווטים - מועצה מקומית תעשייתית נאות חובב</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        :root {{
-            --primary: #0f172a;
-            --secondary: #1e293b;
-            --accent-red: #dc2626;
-            --accent-amber: #d97706;
-            --accent-blue: #0284c7;
-            --accent-green: #16a34a;
-            --bg-light: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>הנחיות בטיחות – יחידות מתאמנות | נאות חובב</title>
 
-        * {{
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }}
+<style>
+:root{
+  --navy:#12324a;
+  --blue:#1677a8;
+  --light:#eef6fa;
+  --red:#c62828;
+  --green:#26734d;
+  --gold:#e6a500;
+  --text:#20313d;
+  --muted:#667784;
+  --border:#d9e2e8;
+}
 
-        body {{
-            font-family: 'Heebo', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-main);
-            line-height: 1.65;
-        }}
+*{box-sizing:border-box}
 
-        /* Header with subtle council industrial & ponds backdrop */
-        header {{
-            position: relative;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 58, 138, 0.92) 100%);
-            color: white;
-            padding: 2.25rem 1.5rem;
-            text-align: center;
-            border-bottom: 5px solid var(--accent-red);
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
-            overflow: hidden;
-        }}
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans Hebrew",sans-serif;
+  background:#f4f7f9;
+  color:var(--text);
+  line-height:1.55;
+}
 
-        header::before {{
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image: url("data:image/png;base64,{map_b64}");
-            background-size: cover;
-            background-position: center;
-            opacity: 0.12;
-            filter: blur(2px) grayscale(30%);
-            pointer-events: none;
-        }}
+.wrap{
+  max-width:1180px;
+  margin:auto;
+  padding:20px;
+}
 
-        header .header-content {{
-            position: relative;
-            z-index: 1;
-        }}
+header{
+  background:linear-gradient(135deg,#0e3048,#17688d);
+  color:#fff;
+  border-radius:20px;
+  padding:28px 30px;
+  margin-bottom:16px;
+  box-shadow:0 8px 28px #0002;
+}
 
-        .badge {{
-            display: inline-block;
-            background-color: var(--accent-red);
-            color: white;
-            font-weight: 700;
-            padding: 0.25rem 0.95rem;
-            border-radius: 999px;
-            font-size: 0.85rem;
-            margin-bottom: 0.75rem;
-            letter-spacing: 0.5px;
-        }}
+h1{
+  margin:0 0 8px;
+  font-size:clamp(25px,4vw,38px);
+}
 
-        header h1 {{
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 0.45rem;
-        }}
+header p{
+  margin:0;
+  opacity:.92;
+}
 
-        header p {{
-            font-size: 1.08rem;
-            color: #cbd5e1;
-            max-width: 760px;
-            margin: 0 auto;
-        }}
+.notice{
+  margin-top:18px;
+  background:#fff;
+  color:#8b1e1e;
+  border-right:6px solid #d32f2f;
+  border-radius:12px;
+  padding:14px 16px;
+  font-weight:700;
+}
 
-        /* Navigation Tabs */
-        nav {{
-            background: var(--card-bg);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            overflow-x: auto;
-        }}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:14px;
+}
 
-        .nav-container {{
-            max-width: 1120px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1rem;
-        }}
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 3px 14px #0000000b;
+}
 
-        .nav-btn {{
-            background: transparent;
-            border: 1px solid transparent;
-            padding: 0.5rem 1.05rem;
-            border-radius: 8px;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }}
+.card button{
+  width:100%;
+  border:0;
+  background:#fff;
+  text-align:right;
+  padding:19px 20px;
+  font-size:19px;
+  font-weight:800;
+  color:var(--navy);
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
 
-        .nav-btn:hover {{
-            background: #f1f5f9;
-            color: var(--primary);
-        }}
+.card button:hover{
+  background:#f5fafc;
+}
 
-        .nav-btn.active {{
-            background: var(--primary);
-            color: white;
-        }}
+.arrow{
+  transition:.2s;
+  color:var(--blue);
+}
 
-        /* Main Container */
-        main {{
-            max-width: 1120px;
-            margin: 2rem auto;
-            padding: 0 1.25rem;
-        }}
+.content{
+  display:none;
+  padding:0 20px 20px;
+  border-top:1px solid var(--border);
+}
 
-        .tab-section {{
-            display: none;
-            animation: fadeIn 0.35s ease;
-        }}
+.content.open{
+  display:block;
+}
 
-        .tab-section.active {{
-            display: block;
-        }}
+.section{
+  margin-top:16px;
+  padding:14px;
+  border-radius:12px;
+  background:var(--light);
+}
 
-        @keyframes fadeIn {{
-            from {{ opacity: 0; transform: translateY(8px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
-        }}
+.section h3{
+  margin:0 0 8px;
+  color:var(--navy);
+  font-size:17px;
+}
 
-        /* Alert Banner */
-        .intro-alert {{
-            background: #eff6ff;
-            border-right: 5px solid var(--accent-blue);
-            padding: 1.25rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.75rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-        }}
+ul{
+  margin:8px 0;
+  padding-right:22px;
+}
 
-        .intro-alert h2 {{
-            color: #1e3a8a;
-            font-size: 1.2rem;
-            margin-bottom: 0.4rem;
-        }}
+li{
+  margin:7px 0;
+}
 
-        /* Section Cards */
-        .section-card {{
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
-            border: 1px solid var(--border-color);
-            position: relative;
-            overflow: hidden;
-        }}
+.danger{
+  background:#fff4f4;
+  border:1px solid #f1c3c3;
+  border-right:5px solid var(--red);
+  padding:14px;
+  border-radius:12px;
+  margin-top:12px;
+}
 
-        .section-card::before {{
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 7px;
-            height: 100%;
-        }}
+.safe{
+  background:#f1faf5;
+  border:1px solid #c8e5d3;
+  border-right:5px solid var(--green);
+  padding:14px;
+  border-radius:12px;
+  margin-top:12px;
+}
 
-        .s-critical::before {{ background-color: var(--accent-red); }}
-        .s-high::before {{ background-color: var(--accent-amber); }}
-        .s-control::before {{ background-color: var(--accent-blue); }}
+.mapbox{
+  background:#fff;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  overflow:auto;
+}
 
-        .card-header {{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }}
+.mapbox img{
+  width:100%;
+  height:auto;
+  display:block;
+}
 
-        .card-title {{
-            font-size: 1.32rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }}
+.caption{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:8px;
+}
 
-        .section-tag {{
-            font-size: 0.8rem;
-            font-weight: 700;
-            padding: 0.25rem 0.75rem;
-            border-radius: 6px;
-            color: white;
-        }}
+.info{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:12px;
+}
 
-        .tag-critical {{ background-color: var(--accent-red); }}
-        .tag-high {{ background-color: var(--accent-amber); }}
-        .tag-control {{ background-color: var(--accent-blue); }}
+.info div{
+  background:#f7fafb;
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px;
+}
 
-        .rule-list {{
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.95rem;
-        }}
+.info b{
+  display:block;
+  color:var(--navy);
+}
 
-        .rule-item {{
-            background: #f8fafc;
-            padding: 1rem 1.25rem;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }}
+.wind{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:12px;
+}
 
-        .rule-item strong {{
-            display: block;
-            font-size: 1.05rem;
-            color: var(--primary);
-            margin-bottom: 0.25rem;
-        }}
+.wind button{
+  border:1px solid #c9dce6;
+  border-radius:10px;
+  padding:12px;
+  background:#f7fbfd;
+  color:var(--navy);
+  font-weight:700;
+  cursor:pointer;
+}
 
-        /* Mandatory Separated Rules Highlight */
-        .mandatory-rule {{
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-right: 5px solid var(--accent-red);
-            padding: 0.95rem 1.25rem;
-            border-radius: 8px;
-        }}
+.wind button.active{
+  background:#dceff7;
+  border-color:#1677a8;
+}
 
-        .mandatory-rule strong {{
-            display: block;
-            font-size: 1.05rem;
-            color: #991b1b;
-            margin-bottom: 0.2rem;
-        }}
+.winddemo{
+  height:170px;
+  margin-top:12px;
+  border-radius:12px;
+  background:#eaf4f8;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-        /* Interactive Wind Simulator */
-        .sim-box {{
-            background: #0f172a;
-            color: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-top: 1.25rem;
-            text-align: center;
-        }}
+.cloud{
+  position:absolute;
+  width:140px;
+  height:80px;
+  border-radius:50%;
+  background:#d6e6ec;
+  opacity:.8;
+}
 
-        .sim-controls {{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.75rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }}
+.arrowwind{
+  font-size:44px;
+  z-index:2;
+  transition:.3s;
+}
 
-        .sim-btn {{
-            background: #334155;
-            color: white;
-            border: 1px solid #475569;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-            transition: background 0.2s;
-        }}
+.hint{
+  font-size:14px;
+  color:var(--muted);
+  margin-top:8px;
+}
 
-        .sim-btn:hover, .sim-btn.active-dir {{
-            background: var(--accent-blue);
-            border-color: #38bdf8;
-        }}
+.check label{
+  display:block;
+  padding:12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin:8px 0;
+  background:#fff;
+  cursor:pointer;
+}
 
-        .svg-wrapper {{
-            background: #1e293b;
-            border-radius: 10px;
-            padding: 1rem;
-            max-width: 650px;
-            margin: 0 auto;
-            border: 1px solid #334155;
-        }}
+.check input{
+  margin-left:8px;
+  transform:scale(1.2);
+}
 
-        /* Map & Diagrams */
-        .map-grid {{
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }}
+.check label.done{
+  background:#eef9f2;
+  border-color:#b9dfc6;
+}
 
-        @media (min-width: 900px) {{
-            .map-grid {{
-                grid-template-columns: 1.35fr 1fr;
-            }}
-        }}
+footer{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+  padding:20px;
+}
 
-        .map-card {{
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.25rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
-        }}
-
-        .map-toolbar {{
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }}
-
-        .zoom-btn {{
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.45rem 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }}
-
-        .zoom-btn.secondary {{
-            background: #e2e8f0;
-            color: var(--primary);
-        }}
-
-        .zoom-btn.active-zoom {{
-            background: var(--accent-red);
-            color: white;
-        }}
-
-        .map-viewport {{
-            border: 2px solid #cbd5e1;
-            border-radius: 10px;
-            overflow: hidden;
-            background: #ffffff;
-            position: relative;
-        }}
-
-        .map-viewport img {{
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.45s ease, transform-origin 0.45s ease;
-            transform-origin: center center;
-        }}
-
-        .map-viewport.zoom-ponds img {{
-            transform: scale(2.35);
-            transform-origin: 62% 68%;
-        }}
-
-        /* Checklist */
-        .checklist-item {{
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 0.9rem;
-            background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }}
-
-        .checklist-item:hover {{
-            background: #f1f5f9;
-        }}
-
-        .checklist-item input[type="checkbox"] {{
-            width: 20px;
-            height: 20px;
-            margin-top: 3px;
-            accent-color: var(--accent-green);
-            cursor: pointer;
-        }}
-
-        .checklist-item.checked {{
-            background: #f0fdf4;
-            border-color: #86efac;
-        }}
-
-        .checklist-item.checked span {{
-            text-decoration: line-through;
-            color: var(--text-muted);
-        }}
-
-        /* Emergency Call Box */
-        .moked-banner {{
-            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 2rem;
-        }}
-
-        .moked-banner h3 {{
-            font-size: 1.3rem;
-            margin-bottom: 0.25rem;
-        }}
-
-        .moked-pill {{
-            background: white;
-            color: #991b1b;
-            font-weight: 900;
-            padding: 0.6rem 1.25rem;
-            border-radius: 8px;
-            font-size: 1.05rem;
-        }}
-
-        footer {{
-            text-align: center;
-            padding: 2rem 1rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            border-top: 1px solid var(--border-color);
-            margin-top: 3rem;
-        }}
-    </style>
+@media(max-width:760px){
+  .wrap{padding:10px}
+  .grid{grid-template-columns:1fr}
+  .info,.wind{grid-template-columns:1fr}
+  header{padding:20px}
+}
+</style>
 </head>
+
 <body>
 
+<div class="wrap">
+
 <header>
-    <div class="header-content">
-        <div class="badge">הנחיות בטיחות וחומרים מסוכנים מחייבות</div>
-        <h1>דף הנחיות חומ"ס לכוחות מנווטים בשטח המועצה</h1>
-        <p>מועצה מקומית תעשייתית נאות חובב • יחידת רישוי וחומ"ס</p>
-    </div>
+  <h1>הנחיות בטיחות לכוחות מתאמנים בשטח המועצה</h1>
+  <p>מועצה מקומית תעשייתית נאות חובב • יחידת רישוי וחומ״ס</p>
+
+  <div class="notice">
+    המרחב הוא מרחב תעשייתי פעיל. ההנחיות בדף זה הן כללי התנהלות כלליים ואינן מהוות מפת סיכונים או פירוט של חומרים מסוכנים.
+  </div>
 </header>
 
-<nav>
-    <div class="nav-container">
-        <button class="nav-btn active" onclick="switchTab('guidelines', this)">1. הנחיות בטיחות והתנהלות</button>
-        <button class="nav-btn" onclick="switchTab('map', this)">2. מפת המועצה ובריכות האידוי</button>
-        <button class="nav-btn" onclick="switchTab('wind', this)">3. סימולטור יציאה ממשפך הסיכונים</button>
-        <button class="nav-btn" onclick="switchTab('checklist', this)">4. רשימת תיוג למפקד</button>
-    </div>
-</nav>
 
-<main>
+<div class="grid">
 
-    <!-- TAB 1: GUIDELINES -->
-    <section id="guidelines" class="tab-section active">
-        <div class="intro-alert">
-            <h2>רקע והנחיה כללית</h2>
-            <p>
-                בשטח המועצה פועלים מפעלים רבים המכילים מגוון רחב של חומרים מסוכנים.
-                <strong>במקרה של אירוע אמת, כונני החומ"ס והמנהל התורן מבצעים הערכת סיכונים בזמן אמת ומעבירים הנחיות התגוננות לכוחות דרך מוקד המועצה.</strong>
-            </p>
-        </div>
+<!-- 1 -->
+<section class="card">
 
-        <!-- Section 1: Immediate Action -->
-        <div class="section-card s-critical">
-            <div class="card-header">
-                <div class="card-title">🚨 פעולות מיידיות בעת אירוע חומ"ס או קבלת התרעה</div>
-                <span class="section-tag tag-critical">הצלת חיים – פעולה מיידית</span>
-            </div>
-            <ul class="rule-list">
-                <li class="rule-item">
-                    <strong>יציאה ממשפך הסיכונים והתפנות בניצב לכיוון הרוח</strong>
-                    יש לזהות מיידית את כיוון נשיבת הרוח (באמצעות אבק, עשן או צמחייה, וכן להסתכל על <strong>שרוולי רוח</strong> במפעלים או בקרבתם) ולנוע במהירות <strong>בניצב (90 מעלות) לכיוון הרוח וכלפי מעלה הרוח</strong>. אין לנוע עם כיוון הרוח.
-                </li>
-                <li class="rule-item">
-                    <strong>הנחיית המוקד ביציאה מהמשפך</strong>
-                    יש ליצור קשר מיידי עם מוקד המועצה ולפעול בהתאם להנחיות המוקד וכונני החומ"ס ליציאה מהמשפך ולהתרחקות מהאזור המסוכן.
-                </li>
-                <li class="rule-item">
-                    <strong>הימנעות ממקומות נמוכים</strong>
-                    גזים רעילים רבים כבדים מהאוויר ומצטברים בשקעים, בוואדיות ובערוצי נחל. יש לשאוף לעלות לשטח גבוה ופתוח.
-                </li>
-                <li class="rule-item">
-                    <strong>התגוננות ראשונית</strong>
-                    במקרה של חשיפה לאדים או עשן, יש לכסות את דרכי הנשימה בבד לח (חולצה/מגבת) עד להתרחקות מהאזור המזוהם.
-                </li>
-            </ul>
-        </div>
+<button onclick="toggle(this)">
+1. הנחיות בטיחות והתנהלות
+<span class="arrow">▼</span>
+</button>
 
-        <!-- Section 2: Prevention & Mandatory Separated Rules -->
-        <div class="section-card s-high">
-            <div class="card-header">
-                <div class="card-title">⚠️ התנהלות ומניעה בשטח</div>
-                <span class="section-tag tag-high">מניעה והרחקה</span>
-            </div>
-            <ul class="rule-list">
-                <li class="rule-item">
-                    <strong>הרחקה מתשתיות</strong>
-                    חל איסור מוחלט להתקרב לגדרות מפעלים, צנרות, מאגרים, מאצרות או תעלות שפכים.
-                </li>
-                <li class="rule-item">
-                    <strong>זיהוי סימנים מחשידים</strong>
-                    יש לגלות ערנות לריח חריג, ענן עשן או אדים בצבע לא שגרתי, רעש של דליפה/שריקה מצינור, או תחושת צריבה בעיניים ובדרכי הנשימה.
-                </li>
-                <li class="mandatory-rule">
-                    <strong>הנחיה מחייבת – איסור התקרבות לשפת הבריכות</strong>
-                    אין להתקרב לשפת הבריכות.
-                </li>
-                <li class="mandatory-rule">
-                    <strong>הנחיה מחייבת – איסור ירידה לתעלות ניקוז</strong>
-                    אין לרדת לתעלות ניקוז.
-                </li>
-                <li class="mandatory-rule">
-                    <strong>הנחיה מחייבת – איסור מגע או שימוש במקורות מים ושלוליות</strong>
-                    אין לגעת או להשתמש בכל מקור מים או שלולית בשטח המועצה (כולל מים שעלולים להיות קשורים לנקזים או למי תהום מזוהמים).
-                </li>
-            </ul>
-        </div>
+<div class="content open">
 
-        <!-- Section 3: Command & Control -->
-        <div class="section-card s-control">
-            <div class="card-header">
-                <div class="card-title">📡 תקשורת, שליטה ודיווח למוקד המועצה</div>
-                <span class="section-tag tag-control">תיאום ובקרה</span>
-            </div>
-            <ul class="rule-list">
-                <li class="rule-item">
-                    <strong>גורם מקשר יחיד</strong>
-                    איש הקשר שהוגדר בטופס התיאום הוא הגורם הבלעדי שמתנהל מול מוקד המועצה. באחריותו לוודא שכל מפקד נוסף בשטח עובד אך ורק דרכו ואינו פונה עצמאית למוקד.
-                </li>
-                <li class="rule-item">
-                    <strong>דיווח כניסה ויציאה</strong>
-                    חובה לעדכן את מוקד המועצה בתחילת הפעילות בשטח ובסיומה.
-                </li>
-                <li class="rule-item">
-                    <strong>דיווח מיקום בחירום</strong>
-                    בעת קבלת התרעה או זיהוי מפגע, על איש הקשר ליצור קשר מיידי עם המוקד ולמסור נקודת ציון (נ"צ) מדויקת של מיקום הכוחות, כדי לאפשר לכונני החומ"ס לבצע הערכת סיכונים מדויקת ולהנחות לאן להתפנות.
-                </li>
-            </ul>
-        </div>
-    </section>
+<div class="section">
+<h3>לפני הכניסה לשטח</h3>
 
-    <!-- TAB 2: ATTACHED MAP & EVAPORATION PONDS -->
-    <section id="map" class="tab-section">
-        <div class="map-grid">
-            <div class="map-card">
-                <div class="card-header" style="margin-bottom: 0.75rem;">
-                    <h2 style="font-size: 1.25rem;">מפת מרחב המועצה המקומית תעשייתית נאות חובב</h2>
-                </div>
-                <div class="map-toolbar">
-                    <button id="btn-full" class="zoom-btn active-zoom" onclick="setMapView('full')">מבט על (כלל המועצה)</button>
-                    <button id="btn-zoom" class="zoom-btn secondary" onclick="setMapView('ponds')">🔍 זום-אין: אזור בריכות האידוי</button>
-                </div>
+<ul>
+<li>יש להגדיר איש קשר יחיד מול המועצה.</li>
+<li>יש לדווח למוקד המועצה על תחילת הפעילות ועל סיומה.</li>
+<li>יש לוודא שכל הכוחות מכירים את כללי הבטיחות.</li>
+<li>יש לוודא יכולת למסור נ״צ מדויק של הכוחות.</li>
+</ul>
 
-                <div id="mapViewport" class="map-viewport">
-                    <img src="data:image/png;base64,{map_b64}" alt="מפת המועצה המקומית תעשייתית נאות חובב">
-                </div>
-            </div>
+</div>
 
-            <!-- Explanation Column with Declarative Heading -->
-            <div class="map-card">
-                <h2 style="font-size: 1.25rem; color: var(--primary); margin-bottom: 1rem;">מאפייני בריכות האידוי, נקזים ומי תהום במרחב נאות חובב</h2>
-                
-                <div class="rule-item" style="margin-bottom: 1rem; border-right: 4px solid var(--accent-blue);">
-                    <strong>בריכות האידוי במרחב נאות חובב</strong>
-                    בריכות ייעודיות לקליטה ואידוי מבוקר של שפכים ותמלחות תעשייתיות ממתקני המועצה. נוכחותן מחייבת שמירת מרחק מוחלטת והימנעות ממעבר בסמוך לשפתן.
-                </div>
 
-                <div class="rule-item" style="margin-bottom: 1rem; border-right: 4px solid var(--accent-amber);">
-                    <strong>נקזים ותעלות ניקוז</strong>
-                    מערכות ניקוז ואיסוף הפרוסות בשטח המועצה שעלולות להכיל שאריות חומרים תעשייתיים או מליחות גבוהה.
-                </div>
+<div class="section">
 
-                <div class="rule-item" style="margin-bottom: 1rem; border-right: 4px solid var(--accent-red);">
-                    <strong>מי תהום שעשויים להיות מזוהמים</strong>
-                    באזור קיימים מי תהום שעשויים להיות מזוהמים.
-                </div>
+<h3>שמירת מרחק מתשתיות</h3>
 
-                <div class="mandatory-rule" style="margin-bottom: 0.75rem;">
-                    <strong>הנחיה מחייבת – שפת הבריכות</strong>
-                    אין להתקרב לשפת הבריכות.
-                </div>
+<ul>
 
-                <div class="mandatory-rule" style="margin-bottom: 0.75rem;">
-                    <strong>הנחיה מחייבת – תעלות ניקוז</strong>
-                    אין לרדת לתעלות ניקוז.
-                </div>
+<li>
+אין להתקרב לגדרות מפעלים, צנרת, מכלים, מאגרים, מאצרות או מתקנים תעשייתיים.
+</li>
 
-                <div class="mandatory-rule">
-                    <strong>הנחיה מחייבת – מקורות מים ושלוליות</strong>
-                    אין לגעת או להשתמש בכל מקור מים או שלולית בשטח המועצה.
-                </div>
-            </div>
-        </div>
-    </section>
+<li>
+אין להיכנס לבורות, פתחים, שקעים או תעלות שאינם חלק מנתיב הפעילות המאושר.
+</li>
 
-    <!-- TAB 3: INTERACTIVE WIND SIMULATOR -->
-    <section id="wind" class="tab-section">
-        <div class="section-card s-critical">
-            <div class="card-header">
-                <div class="card-title">🌬️ סימולטור התפנות בניצב לכיוון הרוח (יציאה ממשפך הסיכונים)</div>
-                <span class="section-tag tag-critical">הדגמה אינטראקטיבית</span>
-            </div>
-            <p style="margin-bottom: 1rem;">
-                במקרה של דליפת חומ"ס, הענן הרעיל נע עם הרוח בצורת קונוס ("משפך סיכונים"). 
-                <strong>הסתכלו על שרוולי הרוח במפעלים הסמוכים</strong>, זהו לאן הרוח נושבת, ובחרו את כיוון הרוח בסימולטור כדי לראות את נתיב ההימלטות הנכון:
-            </p>
+<li>
+<b>אין לרדת לנקזים או לתעלות ניקוז.</b>
+</li>
 
-            <div class="sim-box">
-                <div style="font-weight: 700; margin-bottom: 0.5rem;">בחרו את כיוון נשיבת הרוח (לפי שרוול הרוח):</div>
-                <div class="sim-controls">
-                    <button class="sim-btn active-dir" onclick="updateWind(0, this)">רוח צפונית (נושבת דרומה ⬇️)</button>
-                    <button class="sim-btn" onclick="updateWind(-45, this)">רוח צפון-מערבית (נושבת דרום-מזרחה ↘️)</button>
-                    <button class="sim-btn" onclick="updateWind(90, this)">רוח מזרחית (נושבת מערבה ⬅️)</button>
-                    <button class="sim-btn" onclick="updateWind(-90, this)">רוח מערבית (נושבת מזרחה ➡️)</button>
-                </div>
+</ul>
 
-                <div class="svg-wrapper">
-                    <svg id="windSvg" viewBox="0 0 500 380" width="100%" height="auto">
-                        <text x="250" y="22" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">צפון (N)</text>
-                        <text x="250" y="370" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">דרום (S)</text>
-                        <text x="475" y="195" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">מזרח</text>
-                        <text x="25" y="195" fill="#94a3b8" font-size="13" font-weight="bold" text-anchor="middle">מערב</text>
+</div>
 
-                        <g id="plumeGroup" transform="rotate(0 250 190)" style="transition: transform 0.5s ease;">
-                            <polygon points="250,190 175,355 325,355" fill="rgba(220, 38, 38, 0.45)" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4"/>
-                            <text x="250" y="315" fill="#fca5a5" font-size="13" font-weight="bold" text-anchor="middle">משפך סיכונים (סכנה!)</text>
-                            <text x="250" y="333" fill="#fecaca" font-size="11" text-anchor="middle">אין לנוע עם כיוון הרוח</text>
 
-                            <line x1="250" y1="65" x2="250" y2="145" stroke="#38bdf8" stroke-width="4"/>
-                            <polygon points="250,155 242,140 258,140" fill="#38bdf8"/>
-                            <text x="250" y="55" fill="#38bdf8" font-size="12" font-weight="bold" text-anchor="middle">כיוון הרוח</text>
+<div class="danger">
 
-                            <circle cx="250" cy="245" r="9" fill="#facc15" stroke="#0f172a" stroke-width="2"/>
-                            <text x="250" y="268" fill="#fef08a" font-size="11" font-weight="bold" text-anchor="middle">מיקום הכוח</text>
+<b>מים ושלוליות:</b>
 
-                            <line x1="265" y1="245" x2="385" y2="245" stroke="#22c55e" stroke-width="4"/>
-                            <polygon points="395,245 380,237 380,253" fill="#22c55e"/>
-                            <text x="345" y="232" fill="#86efac" font-size="12" font-weight="bold" text-anchor="middle">פינוי 90° (בניצב)</text>
+אין לגעת, לשתות, לשטוף או להשתמש במים, שלוליות או היקוות מים בשטח.
 
-                            <line x1="235" y1="245" x2="115" y2="245" stroke="#22c55e" stroke-width="4"/>
-                            <polygon points="105,245 120,237 120,253" fill="#22c55e"/>
-                            <text x="155" y="232" fill="#86efac" font-size="12" font-weight="bold" text-anchor="middle">פינוי 90° (בניצב)</text>
-                        </g>
+אין להניח שמקור מים בשטח בטוח לשימוש.
 
-                        <circle cx="250" cy="190" r="22" fill="#dc2626" stroke="white" stroke-width="2.5"/>
-                        <text x="250" y="194" fill="white" font-size="11" font-weight="bold" text-anchor="middle">מוקד</text>
-                    </svg>
-                </div>
+</div>
 
-                <div style="margin-top: 1rem; font-size: 0.95rem; color: #cbd5e1;">
-                    <strong>כלל אצבע בשטח:</strong> זהה את שרוול הרוח במפעל הקרוב ➔ אל תברח קדימה עם הרוח ואל תרוץ לכיוון המפעל ➔ חתוך הצידה ב-90 מעלות לשטח גבוה ודווח למוקד!
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- TAB 4: COMMANDER CHECKLIST -->
-    <section id="checklist" class="tab-section">
-        <div class="section-card s-control">
-            <div class="card-header">
-                <div class="card-title">✅ רשימת תיוג למפקד הכוח / איש הקשר</div>
-                <span class="section-tag tag-control">בקרה לפני ובמהלך הפעילות</span>
-            </div>
-            <p style="margin-bottom: 1rem; color: var(--text-muted);">לחצו על כל סעיף כדי לסמן ביצוע לפני היציאה לשטח:</p>
+<div class="safe">
 
-            <label class="checklist-item" onclick="toggleCheck(this)">
-                <input type="checkbox">
-                <span><strong>איש קשר יחיד מוגדר:</strong> וידאתי שפרטיי מופיעים בטופס התיאום וכי כלל מפקדי המשנה בשטח מתנהלים אך ורק דרכי מול מוקד המועצה.</span>
-            </label>
+<b>זיהית ריח חריג, עשן, אדים, נוזל שנשפך או מפגע?</b>
 
-            <label class="checklist-item" onclick="toggleCheck(this)">
-                <input type="checkbox">
-                <span><strong>דיווח תחילת פעילות למוקד:</strong> יצרתי קשר טלפוני עם מוקד המועצה עם ההגעה לשטח ודיווחתי על כניסת הכוחות.</span>
-            </label>
+<br>
 
-            <label class="checklist-item" onclick="toggleCheck(this)">
-                <input type="checkbox">
-                <span><strong>תדרוך הכוחות על איסור התקרבות:</strong> חידדתי לכוחות שאין להתקרב לשפת הבריכות, אין לרדת לתעלות ניקוז, ואין לגעת או להשתמש בכל מקור מים או שלולית בשטח המועצה.</span>
-            </label>
+לא מתקרבים כדי לזהות. מתרחקים ומדווחים.
 
-            <label class="checklist-item" onclick="toggleCheck(this)">
-                <input type="checkbox">
-                <span><strong>הכרת נוהל התפנות ושרוולי רוח:</strong> הנחיתי את המפקדים והכוחות לזהות שרוולי רוח במפעלים, ובמקרה של אירוע/ריח חריג לנוע ב-90 מעלות בניצב לכיוון הרוח ולעלות לשטח גבוה.</span>
-            </label>
+</div>
 
-            <label class="checklist-item" onclick="toggleCheck(this)">
-                <input type="checkbox">
-                <span><strong>אמצעי מסירת נ"צ זמין:</strong> ברשותי מפה/אמצעי ניווט למסירת נ"צ מדויקת למוקד המועצה בכל רגע נתון במקרה חירום.</span>
-            </label>
+</div>
+</section>
 
-            <label class="checklist-item" onclick="toggleCheck(this)">
-                <input type="checkbox">
-                <span><strong>דיווח סיום פעילות למוקד:</strong> בסיום הניווט ויציאת אחרון הכוחות משטח המועצה – חובה לדווח על סגירת פעילות למוקד.</span>
-            </label>
-        </div>
-    </section>
 
-    <!-- Emergency Footer Banner -->
-    <div class="moked-banner">
-        <div>
-            <h3>מוקד מועצה מקומית תעשייתית נאות חובב (24/7)</h3>
-            <p>בכל כניסה לשטח, יציאה מהשטח, זיהוי מפגע או קבלת התרעה – יש לפנות למוקד המועצה דרך איש הקשר המוגדר בלבד.</p>
-        </div>
-        <div class="moked-pill">דיווח חובה: כניסה • חירום (נ"צ) • יציאה</div>
-    </div>
+<!-- 2 -->
+<section class="card">
 
-</main>
+<button onclick="toggle(this)">
+2. התנהלות במקרה חירום
+<span class="arrow">▼</span>
+</button>
+
+<div class="content">
+
+<div class="danger">
+
+<h3>🚨 במקרה של אירוע חומ״ס או קבלת התרעה</h3>
+
+<ol>
+
+<li>הפסק את הפעילות והתרחק מאזור האירוע.</li>
+
+<li>אל תתקרב למקור האירוע ואל תנסה לזהות את החומר.</li>
+
+<li>עדכן את איש הקשר של היחידה.</li>
+
+<li>איש הקשר יפנה למוקד המועצה וימסור נ״צ מדויק.</li>
+
+<li>פעל לפי הנחיות המוקד והגורמים המקצועיים.</li>
+
+</ol>
+
+</div>
+
+
+<div class="section">
+
+<h3>תקשורת</h3>
+
+<ul>
+
+<li>
+איש הקשר שהוגדר מראש הוא הגורם המתנהל מול מוקד המועצה.
+</li>
+
+<li>
+אין לפנות עצמאית למפעל לצורך בירור.
+</li>
+
+<li>
+הנחיות התרחקות והתגוננות ייקבעו בהתאם למיקום האירוע ולתנאים בזמן אמת.
+</li>
+
+</ul>
+
+</div>
+
+
+<div class="section">
+
+<h3>חשוב</h3>
+
+<b>מסלול הניווט אינו בהכרח מסלול מילוט.</b>
+
+<br>
+
+אין לבחור מסלול פינוי עצמאי על סמך המפה בלבד.
+
+יש לפעול לפי הנחיות המועצה בזמן אמת.
+
+</div>
+
+</div>
+</section>
+
+
+<!-- 3 -->
+<section class="card">
+
+<button onclick="toggle(this)">
+3. מפת מרחב המועצה
+<span class="arrow">▼</span>
+</button>
+
+<div class="content">
+
+<div class="mapbox">
+
+<img
+src="neot_hovav_map_no_pools_final.jpg"
+alt="מפת התמצאות במרחב המועצה"
+>
+
+</div>
+
+<div class="caption">
+
+<b>מפת התמצאות בלבד.</b>
+
+המפה אינה מציגה מיקום של חומרים מסוכנים, אינה מפת סיכונים ואינה מסמנת נקזים, בורות או תשתיות רגישות.
+
+אזורים ותשתיות שאינם מוצגים אינם מעידים על היעדר סיכון.
+
+</div>
+
+</div>
+</section>
+
+
+<!-- 4 -->
+<section class="card">
+
+<button onclick="toggle(this)">
+4. כיוון רוח – המחשה בלבד
+<span class="arrow">▼</span>
+</button>
+
+<div class="content">
+
+<p>
+
+המחשה עקרונית בלבד.
+
+במקרה אמת אין להסתמך על הסימולטור לצורך קביעת מסלול פינוי.
+
+יש לפעול לפי הנחיות מוקד המועצה והגורמים המקצועיים.
+
+</p>
+
+
+<div class="wind">
+
+<button onclick="wind('⬇️',this)">
+רוח נושבת דרומה
+</button>
+
+<button onclick="wind('↙️',this)">
+רוח נושבת דרום־מערבה
+</button>
+
+<button onclick="wind('⬅️',this)">
+רוח נושבת מערבה
+</button>
+
+<button onclick="wind('➡️',this)">
+רוח נושבת מזרחה
+</button>
+
+</div>
+
+
+<div class="winddemo">
+
+<div class="cloud"></div>
+
+<div id="windArrow" class="arrowwind">
+⬇️
+</div>
+
+</div>
+
+
+<div class="hint">
+
+אין לנוע לתוך ענן, עשן או אדים ואין להתקרב למקור האירוע.
+
+כיוון ההתרחקות בפועל ייקבע בהתאם לאירוע ולהנחיות המוקד.
+
+</div>
+
+</div>
+</section>
+
+
+<!-- 5 -->
+<section class="card">
+
+<button onclick="toggle(this)">
+5. רשימת תיוג למפקד / איש הקשר
+<span class="arrow">▼</span>
+</button>
+
+<div class="content check">
+
+<label>
+<input type="checkbox">
+איש קשר יחיד מוגדר מול המועצה
+</label>
+
+<label>
+<input type="checkbox">
+דיווחתי למוקד על תחילת הפעילות
+</label>
+
+<label>
+<input type="checkbox">
+תדרכתי את הכוחות שלא להתקרב לתשתיות תעשייתיות, נקזים, בורות ומקורות מים
+</label>
+
+<label>
+<input type="checkbox">
+וידאתי יכולת למסור נ״צ מדויק בכל רגע
+</label>
+
+<label>
+<input type="checkbox">
+הכוחות מכירים את נוהל הדיווח במקרה של אירוע או מפגע
+</label>
+
+<label>
+<input type="checkbox">
+דיווחתי למוקד על סיום הפעילות ויציאת אחרון הכוחות
+</label>
+
+</div>
+</section>
+
+
+<!-- 6 -->
+<section class="card">
+
+<button onclick="toggle(this)">
+6. פרטי האימון והנחיות משתנות
+<span class="arrow">▼</span>
+</button>
+
+<div class="content">
+
+<div class="info">
+
+<div>
+<b>תאריך פעילות</b>
+<span contenteditable="true">להזנה</span>
+</div>
+
+<div>
+<b>אזור פעילות</b>
+<span contenteditable="true">להזנה</span>
+</div>
+
+<div>
+<b>איש קשר</b>
+<span contenteditable="true">להזנה</span>
+</div>
+
+</div>
+
+<p class="hint">
+
+הסעיף מיועד לעדכונים נקודתיים לפני כל אימון.
+
+אין להוסיף כאן פירוט חומרים, תרחישים או מידע תפעולי רגיש.
+
+</p>
+
+</div>
+</section>
+
+</div>
+
 
 <footer>
-    מועצה מקומית תעשייתית נאות חובב • יחידת רישוי וחומ"ס
+מועצה מקומית תעשייתית נאות חובב • יחידת רישוי וחומ״ס
 </footer>
 
+</div>
+
+
 <script>
-    function switchTab(tabId, btnEl) {{
-        document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        
-        document.getElementById(tabId).classList.add('active');
-        btnEl.classList.add('active');
-    }}
 
-    function setMapView(mode) {{
-        const viewport = document.getElementById('mapViewport');
-        const btnFull = document.getElementById('btn-full');
-        const btnZoom = document.getElementById('btn-zoom');
+function toggle(btn){
 
-        if (mode === 'ponds') {{
-            viewport.classList.add('zoom-ponds');
-            btnZoom.classList.add('active-zoom');
-            btnZoom.classList.remove('secondary');
-            btnFull.classList.remove('active-zoom');
-            btnFull.classList.add('secondary');
-        }} else {{
-            viewport.classList.remove('zoom-ponds');
-            btnFull.classList.add('active-zoom');
-            btnFull.classList.remove('secondary');
-            btnZoom.classList.remove('active-zoom');
-            btnZoom.classList.add('secondary');
-        }}
-    }}
+const c=btn.nextElementSibling;
 
-    function updateWind(angle, btnElement) {{
-        const plume = document.getElementById('plumeGroup');
-        plume.setAttribute('transform', `rotate(${{angle}} 250 190)`);
+c.classList.toggle('open');
 
-        document.querySelectorAll('.sim-btn').forEach(btn => btn.classList.remove('active-dir'));
-        btnElement.classList.add('active-dir');
-    }}
+btn.querySelector('.arrow').textContent =
+c.classList.contains('open') ? '▲' : '▼';
 
-    function toggleCheck(labelElement) {{
-        const checkbox = labelElement.querySelector('input[type="checkbox"]');
-        setTimeout(() => {{
-            if (checkbox.checked) {{
-                labelElement.classList.add('checked');
-            }} else {{
-                labelElement.classList.remove('checked');
-            }}
-        }}, 10);
-    }}
+}
+
+
+function wind(symbol,btn){
+
+document
+.querySelectorAll('.wind button')
+.forEach(b=>b.classList.remove('active'));
+
+btn.classList.add('active');
+
+document.getElementById('windArrow').textContent=symbol;
+
+}
+
+
+document
+.querySelectorAll('.check input')
+.forEach(i=>{
+
+i.addEventListener('change',()=>{
+
+i.parentElement.classList.toggle(
+'done',
+i.checked
+);
+
+});
+
+});
+
 </script>
 
 </body>
 </html>
-"""
-
-with open("neot_hovav_hazmat_briefing_v2.html", "w", encoding="utf-8") as f:
-    f.write(updated_html)
-
-print("Saved HTML file successfully, total bytes:", len(updated_html.encode("utf-8")))
